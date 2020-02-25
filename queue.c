@@ -160,7 +160,7 @@ void q_reverse(queue_t *q)
  * No effect if q is NULL or empty. In addition, if q has only one
  * element, do nothing.
  */
-list_ele_t *merge_sort(list_ele_t *head, int size)
+list_ele_t *merge_sort(list_ele_t *head, int size, list_ele_t **tail)
 {
     if (!head || !head->next)
         return head;
@@ -171,8 +171,8 @@ list_ele_t *merge_sort(list_ele_t *head, int size)
     left = head;
     right = mid->next;
     mid->next = NULL;
-    left = merge_sort(left, (size / 2));
-    right = merge_sort(right, (size - size / 2));
+    left = merge_sort(left, (size / 2), tail);
+    right = merge_sort(right, (size - size / 2), tail);
 
     list_ele_t *merge = NULL;
     while (left != NULL || right != NULL) {
@@ -197,11 +197,12 @@ list_ele_t *merge_sort(list_ele_t *head, int size)
             right = right->next;
         }
     }
+    *tail = merge;
     return head;
 }
 void q_sort(queue_t *q)
 {
     if (!q || !q->head || q->q_size == 1)
         return;
-    q->head = merge_sort(q->head, q->q_size);
+    q->head = merge_sort(q->head, q->q_size, &q->tail);
 }
