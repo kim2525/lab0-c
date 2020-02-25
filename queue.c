@@ -84,6 +84,7 @@ bool q_insert_tail(queue_t *q, char *s)
         free(newh);
         return false;
     }
+    newh->next = NULL;
     /*strcpy is not safe, used snprintf instead*/
     snprintf(value, strlen(s) + 1, "%s", s);
     newh->value = value;
@@ -111,8 +112,10 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
     if (!q || !q->head)
         return false;
     snprintf(sp, bufsize, "%s", q->head->value);
+    list_ele_t *tmp;
+    tmp = q->head;
     q->head = q->head->next;
-    free(q->head);
+    free(tmp);
     q->q_size -= 1;
     return true;
 }
