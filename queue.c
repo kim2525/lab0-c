@@ -11,7 +11,7 @@
 queue_t *q_new()
 {
     queue_t *q = malloc(sizeof(queue_t));
-    if (q == NULL)
+    if (!q)
         return NULL;  // if malloc failed return NULL
     q->head = NULL;
     q->tail = NULL;
@@ -23,7 +23,7 @@ queue_t *q_new()
 void q_free(queue_t *q)
 {
     /*free all value and list element*/
-    for (list_ele_t *tmp = q->head; tmp != NULL; tmp = tmp->next) {
+    for (list_ele_t *tmp = q->head; !tmp; tmp = tmp->next) {
         free(tmp->value);
         free(tmp);
     }
@@ -41,14 +41,14 @@ void q_free(queue_t *q)
 bool q_insert_head(queue_t *q, char *s)
 {
     list_ele_t *newh;
-    if (q == NULL)
+    if (!q)
         return false;
     newh = malloc(sizeof(list_ele_t));
-    if (newh == NULL)
+    if (!newh)
         return false;
     char *value;
     value = malloc(sizeof(s));
-    if (value == NULL) {
+    if (!value) {
         free(newh);
         return false;
     }
@@ -57,7 +57,7 @@ bool q_insert_head(queue_t *q, char *s)
     newh->value = value;
     newh->next = q->head;
     q->head = newh;
-    if (q->tail == NULL)
+    if (!q->tail)
         q->tail = newh;
     q->q_size += 1;
     return true;
@@ -73,21 +73,21 @@ bool q_insert_head(queue_t *q, char *s)
 bool q_insert_tail(queue_t *q, char *s)
 {
     list_ele_t *newh;
-    if (q == NULL)
+    if (!q)
         return false;
     newh = malloc(sizeof(list_ele_t));
-    if (newh == NULL)
+    if (!newh)
         return false;
     char *value;
     value = malloc(sizeof(s));
-    if (value == NULL) {
+    if (!value) {
         free(newh);
         return false;
     }
     /*strcpy is not safe, used snprintf instead*/
     snprintf(value, strlen(s) + 1, "%s", s);
     newh->value = value;
-    if (q->tail == NULL) {
+    if (!q->tail) {
         q->tail = newh;
         q->head = newh;
     } else {
@@ -108,7 +108,7 @@ bool q_insert_tail(queue_t *q, char *s)
  */
 bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
 {
-    if (q == NULL || q->head == NULL)
+    if (!q || !q->head)
         return false;
     snprintf(sp, bufsize, "%s", q->head->value);
     q->head = q->head->next;
@@ -123,7 +123,7 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
  */
 int q_size(queue_t *q)
 {
-    if (q == NULL)
+    if (!q)
         return 0;
     return q->q_size;
 }
@@ -137,14 +137,14 @@ int q_size(queue_t *q)
  */
 void q_reverse(queue_t *q)
 {
-    if (q == NULL || q->head == NULL)
+    if (!q || !q->head)
         return;
     list_ele_t *next, *cur, *last;
     last = NULL;
     cur = q->head;
     q->head = q->tail;
     q->tail = cur;
-    while (cur != NULL) {
+    while (cur) {
         next = cur->next;
         cur->next = last;
         last = cur;
@@ -159,7 +159,7 @@ void q_reverse(queue_t *q)
  */
 list_ele_t *merge_sort(list_ele_t *head, int size)
 {
-    if (head == NULL || head->next == NULL)
+    if (!head || !head->next)
         return head;
     list_ele_t *left, *right, *mid;
     mid = head;
@@ -198,7 +198,7 @@ list_ele_t *merge_sort(list_ele_t *head, int size)
 }
 void q_sort(queue_t *q)
 {
-    if (q == NULL || q->head == NULL || q->q_size == 1)
+    if (!q || !q->head || q->q_size == 1)
         return;
     q->head = merge_sort(q->head, q->q_size);
 }
